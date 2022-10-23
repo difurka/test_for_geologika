@@ -6,16 +6,16 @@
 // #include <map>
 // #include <stdexcept>
 
-#include "elements_of_device/pump.h"
-#include "elements_of_device/sensor.h"
+// #include "elements_of_device/pump.h"
+// #include "elements_of_device/sensor.h"
 #include "queue_of_commands.h"
 
 class Implementation {
-  enum PartType {
-    kPump,
-    kSensor1,
-    kSensor2
-  };
+  // enum PartType {
+  //   kPump,
+  //   kSensor1,
+  //   kSensor2
+  // };
 
   enum Message {
     kWelcome,
@@ -51,8 +51,8 @@ class Implementation {
 
  private:
   QueueOfCommands queueOfCommands_;
-  Pump pump_;
-  Sensor sensor1_, sensor2_;
+  // Pump pump_;
+  // Sensor sensor1_, sensor2_;
   // double period_ = 5;
   const std::vector<std::string> messages_ {
     "\n(EXIT)            enter for exit the program\n"\

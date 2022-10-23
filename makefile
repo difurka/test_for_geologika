@@ -1,6 +1,6 @@
 CXX=g++
 CPPFLAGS=-lstdc++ -std=c++17
-WCHECK=#-Wall -Wextra -Werror
+WCHECK=-Wall -Wextra -Werror
 # TESTFLAG=-lgtest --coverage -fprofile-arcs -ftest-coverage
 # DEBUGFLAG=-ggdb3
 
@@ -33,7 +33,7 @@ all: implement
 
 implement:
 	@make clean
-	@$(CXX) $(CPPFLAGS) $(MAIN) $(SOURCE) $(WCHECK) -o device.out
+	@$(CXX) $(CPPFLAGS) $(MAIN) $(SOURCE) $(WCHECK) -pthread -o device.out
 	@./device.out
 
 # hash_table.a:  hash_table.o

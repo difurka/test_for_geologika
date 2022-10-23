@@ -36,9 +36,9 @@ void Implementation::Print(const Message &message) {
 }
 
 void Implementation::PrintInfo() {
-  std::cout << "Velocity of pump: " <<  pump_.GetVelocity() << std::endl;
-  std::cout << "Pressure of sensor 1: " <<  sensor1_.GetPressure() << std::endl;
-  std::cout << "Pressure of sensor 2: " <<  sensor2_.GetPressure() << std::endl;
+  std::cout << "Velocity of pump: " <<  queueOfCommands_.pump_.GetVelocity() << std::endl;
+  std::cout << "Pressure of sensor 1: " <<  queueOfCommands_.sensor1_.GetPressure() << std::endl;
+  std::cout << "Pressure of sensor 2: " <<  queueOfCommands_.sensor2_.GetPressure() << std::endl;
   std::cout << "Period: " <<  queueOfCommands_.GetPeriod() << std::endl;
 
   std::queue<std::pair<QueueOfCommands::PartType, double>> tempQueue = queueOfCommands_.GetCommands();
@@ -52,6 +52,7 @@ void Implementation::PrintInfo() {
       tempQueue.pop();
       i++;
     }
+    std::cout << "\nend of queue.\n" << std::endl;
   }
 }
 
@@ -73,21 +74,21 @@ void Implementation::AddVelocityOfPamp(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double velocity = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kPump, velocity);
-  Print(kSuccessOfAddVelocityOfPamp);
+  // Print(kSuccessOfAddVelocityOfPamp);
 }
 
 void Implementation::AddPressureOfSensor1(const std::string& command) {
   auto tokens = ParserOfCommand(command);
-  double pressure= std::stod(tokens[1]);
+  double pressure = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kSensor1, pressure);
-  Print(kSuccessOfAddPressureOfSensor1);
+  // Print(kSuccessOfAddPressureOfSensor1);
 }
 
 void Implementation::AddPressureOfSensor2(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kSensor2, pressure);
-  Print(kSuccessOfAddPressureOfSensor2);
+  // Print(kSuccessOfAddPressureOfSensor2);
 }
 
 void Implementation::ChagePeriodOfDevice(const std::string& command) {
