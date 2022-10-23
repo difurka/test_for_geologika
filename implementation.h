@@ -2,12 +2,13 @@
 #define IMPLEMENTATION_H_
 
 #include <string>
-#include <queue>
-#include <map>
-#include <stdexcept>
+// #include <queue>
+// #include <map>
+// #include <stdexcept>
 
 #include "elements_of_device/pump.h"
 #include "elements_of_device/sensor.h"
+#include "queue_of_commands.h"
 
 class Implementation {
   enum PartType {
@@ -49,10 +50,10 @@ class Implementation {
   
 
  private:
-  std::queue<std::pair<PartType, double>> queueOfCommands;
-  Pump pump;
-  Sensor sensor1, sensor2;
-  double period_ = 5;
+  QueueOfCommands queueOfCommands_;
+  Pump pump_;
+  Sensor sensor1_, sensor2_;
+  // double period_ = 5;
   const std::vector<std::string> messages_ {
     "\n(EXIT)            enter for exit the program\n"\
      "(HELP)            get help\n",

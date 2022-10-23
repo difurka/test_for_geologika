@@ -12,7 +12,8 @@ WCHECK=#-Wall -Wextra -Werror
 
 HEADERS=implementation.h \
 		./elements_of_device/pump.h \
-		./elements_of_device/sensor.h
+		./elements_of_device/sensor.h \
+		queue_of_commands.h
 
 SOURCE=implementation.cpp \
 		# ./elements_of_device/pump.cpp \

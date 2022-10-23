@@ -36,24 +36,23 @@ void Implementation::Print(const Message &message) {
 }
 
 void Implementation::PrintInfo() {
-  std::cout << "Velocity of pump:" <<  pump.GetVelocity() << std::endl;
-  std::cout << "Pressure of sensor 1: " <<  sensor1.GetPressure() << std::endl;
-  std::cout << "Pressure of sensor 2: " <<  sensor2.GetPressure() << std::endl;
-  std::cout << "Period: " <<  period_ << std::endl;
+  std::cout << "Velocity of pump: " <<  pump_.GetVelocity() << std::endl;
+  std::cout << "Pressure of sensor 1: " <<  sensor1_.GetPressure() << std::endl;
+  std::cout << "Pressure of sensor 2: " <<  sensor2_.GetPressure() << std::endl;
+  std::cout << "Period: " <<  queueOfCommands_.GetPeriod() << std::endl;
 
-  std::queue<std::pair<PartType, double>> tempQueue = queueOfCommands;
-  std::cout << "The queue of commands: \n";
+  std::queue<std::pair<QueueOfCommands::PartType, double>> tempQueue = queueOfCommands_.GetCommands();
+  std::cout << "The queue of commands: ";
   if (tempQueue.empty())
     std::cout << "empty." << std::endl;
   else {
     int i = 1;
     while (!tempQueue.empty()) {
-      std::cout << i << ") " << parts_[tempQueue.front().first] << " " << tempQueue.front().second << "\n";
+      std::cout << "\n" << i << ") " << parts_[tempQueue.front().first] << " " << tempQueue.front().second;
       tempQueue.pop();
       i++;
     }
   }
-  
 }
 
 void Implementation::CommandForDevice(const std::string& command) {
@@ -66,42 +65,42 @@ void Implementation::CommandForDevice(const std::string& command) {
   } else if (std::regex_search(command, std::regex(regex_[kSetPeriod]))) {
     ChagePeriodOfDevice(command);
   } else {
-    std::cout << "ERROR: invalid command\n" << command << std::endl;  // @note del command
+    std::cout << "ERROR: invalid command " << command << std::endl;  // @note del command
   }
 }
 
 void Implementation::AddVelocityOfPamp(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double velocity = std::stod(tokens[1]);
-  queueOfCommands.push(std::make_pair(kPump, velocity));
+  queueOfCommands_.Push(QueueOfCommands::kPump, velocity);
   Print(kSuccessOfAddVelocityOfPamp);
 }
 
 void Implementation::AddPressureOfSensor1(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure= std::stod(tokens[1]);
-  queueOfCommands.push(std::make_pair(kSensor1, pressure));
+  queueOfCommands_.Push(QueueOfCommands::kSensor1, pressure);
   Print(kSuccessOfAddPressureOfSensor1);
 }
 
 void Implementation::AddPressureOfSensor2(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
-  queueOfCommands.push(std::make_pair(kSensor2, pressure));
+  queueOfCommands_.Push(QueueOfCommands::kSensor2, pressure);
   Print(kSuccessOfAddPressureOfSensor2);
 }
 
 void Implementation::ChagePeriodOfDevice(const std::string& command) {
-
   auto tokens = ParserOfCommand(command);
   double period = std::stod(tokens[1]);
-  period_ = period;
+  queueOfCommands_.SetPeriod(period);
   Print(kSuccessOfSetPeriod);
 }
 
 std::vector<std::string> Implementation::ParserOfCommand(const std::string& command) {
   std::vector<std::string> result;
-  std::istringstream string_stream(RemoveSpaces(command));
+  // std::istringstream string_stream(RemoveSpaces(command));
+  std::istringstream string_stream(command);
   std::string token;
   while (std::getline(string_stream, token, ' ')) {
     result.push_back(token);
@@ -109,10 +108,10 @@ std::vector<std::string> Implementation::ParserOfCommand(const std::string& comm
   return result;
 }
 
-std::string Implementation::RemoveSpaces(const std::string& command) {
-  std::regex sample("[ ]{1,}");
-  std::string result;
-  std::regex_replace(std::back_inserter(result),
-                    command.begin(), command.end(), sample, " ");
-  return result;
-}
+// std::string Implementation::RemoveSpaces(const std::string& command) {
+//   std::regex sample("[ ]{1,}");
+//   std::string result;
+//   std::regex_replace(std::back_inserter(result),
+//                     command.begin(), command.end(), sample, " ");
+//   return result;
+// }
