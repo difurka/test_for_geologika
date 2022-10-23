@@ -36,9 +36,9 @@ void Implementation::Print(const Message &message) {
 }
 
 void Implementation::PrintInfo() {
-  std::cout << "Velocity of pump: " <<  queueOfCommands_.pump_.GetVelocity() << std::endl;
-  std::cout << "Pressure of sensor 1: " <<  queueOfCommands_.sensor1_.GetPressure() << std::endl;
-  std::cout << "Pressure of sensor 2: " <<  queueOfCommands_.sensor2_.GetPressure() << std::endl;
+  std::cout << "Velocity of pump: " <<  queueOfCommands_.GetVelocityOfPump() << std::endl;
+  std::cout << "Pressure of sensor 1: " <<  queueOfCommands_.GetPressureOfSensor1() << std::endl;
+  std::cout << "Pressure of sensor 2: " <<  queueOfCommands_.GetPressureOfSensor2() << std::endl;
   std::cout << "Period: " <<  queueOfCommands_.GetPeriod() << std::endl;
 
   std::queue<std::pair<QueueOfCommands::PartType, double>> tempQueue = queueOfCommands_.GetCommands();

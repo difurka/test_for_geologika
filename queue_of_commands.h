@@ -6,6 +6,7 @@
 #include <queue>
 #include <chrono>
 #include <iostream>  // @note del
+#include <random>
 
 #include "elements_of_device/pump.h"
 #include "elements_of_device/sensor.h"
@@ -24,12 +25,20 @@ class QueueOfCommands {
   };
 
   ~QueueOfCommands() {
-    is_run_ = false;
+    is_run_ = false;  // @note wake thread
   };
   
-  void SetPeriod(double period) {period_ = period;}
+  void SetPeriod(double period) {
+    is_run_ = false;
+    period_ = period;
+    is_run_ = true;
+  }
+   
   double GetPeriod() {return period_;};
   std::queue<std::pair<PartType, double>> GetCommands() {return commands_;}
+  double GetVelocityOfPump() {return velocity_of_pump_;}
+  double GetPressureOfSensor1() {return pressure_of_sensor1_;}
+  double GetPressureOfSensor2() {return pressure_of_sensor2_;}
 
   void Push(PartType element, double value){
     std::lock_guard lock(mtx_);
@@ -38,47 +47,61 @@ class QueueOfCommands {
   }
 
   void InspectionOfQueue() {
-    // std::cout << "in thread" << std::endl;
-    
     std::pair<PartType, double> command;
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(-1, 1);
+
     while (is_run_) {
       if (update_) {
         command = GetElementFromQueue();
-
-        if (command.first == kPump) {
-          pump_.SetVelocity(command.second);
-          std::cout << "Set velocity of the pump: " << command.second << std::endl;
+        PartType part = command.first;
+        double value = command.second;
+        if (part == kPump) {
+          pump_.SetVelocity(value);
+          velocity_of_pump_ = value;
+          std::cout << "Set velocity of the pump: " << value << std::endl;
         }
-        if (command.first == kSensor1) {
-          sensor1_.SetPressure(command.second);
-          std::cout << "Set pressure of the sensor1: " << command.second << std::endl;
+        if (part == kSensor1) {
+          sensor1_.SetPressure(value);
+          pressure_of_sensor1_ = value;
+          std::cout << "Set pressure of the sensor1: " << value << std::endl;
         }
-        if (command.first == kSensor2) {
-          sensor2_.SetPressure(command.second);
-          std::cout << "Set pressure of the sensor2: " << command.second << std::endl;
+        if (part == kSensor2) {
+          sensor2_.SetPressure(value);
+          pressure_of_sensor2_ = value;
+          std::cout << "Set pressure of the sensor2: " << value << std::endl;
         }
         if (commands_.empty()) update_ = false;
         std::this_thread::sleep_for(std::chrono::seconds(period_));
+      } else {
+         velocity_of_pump_ = (dist(gen)/100 + 1)  * pump_.GetVelocity();
+         pressure_of_sensor1_ = (dist(gen)/100 + 1) * sensor1_.GetPressure();  //@note if null plus noise
+         pressure_of_sensor2_ = (dist(gen)/100 + 1)  * sensor2_.GetPressure();  //@note if null plus noise
       }
     }
   } 
   
-    std::pair<PartType, double> GetElementFromQueue() {
-      std::lock_guard lock(mtx_);
-      std::pair<PartType, double>  result = commands_.front();
-      commands_.pop();
-      if (commands_.empty()) update_ = false;
-      return result;
-    }
+  std::pair<PartType, double> GetElementFromQueue() {
+    std::lock_guard lock(mtx_);
+    std::pair<PartType, double>  result = commands_.front();
+    commands_.pop();
+    if (commands_.empty()) update_ = false;
+    return result;
+  }
 
-  Pump pump_;
-  Sensor sensor1_, sensor2_;
+
  private:
   bool update_ = false;
   bool is_run_ = true;
   std::queue<std::pair<PartType, double>> commands_;
   int period_ = 10;
   mutable std::mutex mtx_;
+  Pump pump_;
+  Sensor sensor1_, sensor2_;
+  double velocity_of_pump_ = 0;
+  double pressure_of_sensor1_ = 0;
+  double pressure_of_sensor2_ = 0;
 };
 
 
