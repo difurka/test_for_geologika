@@ -1,5 +1,5 @@
-#ifndef QUEUE_OF_COMMANDS_H_
-#define QUEUE_OF_COMMANDS_H_
+#ifndef COMMANDS_EXECUTION_H_
+#define COMMANDS_EXECUTION_H_
 
 #include <mutex>
 #include <thread>
@@ -11,22 +11,22 @@
 #include "elements_of_device/pump.h"
 #include "elements_of_device/sensor.h"
 
-class QueueOfCommands {
+class CommandsExecution {  
  public:
   enum PartType {
     kPump,
     kSensor1,
     kSensor2
   };
- public:
-  QueueOfCommands() {
-    std::thread inspector = std::thread(&QueueOfCommands::InspectionOfQueue, this);
+  using command_t = std::pair<PartType, double>; 
+
+  CommandsExecution() {
+    std::thread inspector = std::thread(&CommandsExecution::InspectionOfQueue, this);
     inspector.detach();
   };
 
-  ~QueueOfCommands() {
+  ~CommandsExecution() {
     is_run_ = false;
-    // std::cout << "End" <<  std::endl;
   };
   
   void SetPeriod(double period) {
@@ -36,7 +36,7 @@ class QueueOfCommands {
   }
    
   double GetPeriod() {return period_;};
-  std::queue<std::pair<PartType, double>> GetCommands() {return commands_;}
+  std::queue<command_t> GetCommands() {return commands_;}
   double GetVelocityOfPump() {return velocity_of_pump_;}
   double GetPressureOfSensor1() {return pressure_of_sensor1_;}
   double GetPressureOfSensor2() {return pressure_of_sensor2_;}
@@ -44,36 +44,27 @@ class QueueOfCommands {
   void Push(PartType element, double value){
     std::lock_guard lock(mtx_);
     commands_.push(std::make_pair(element, value));
-    update_ = true;
+    has_command_for_execute_ = true;
   }
 
   void InspectionOfQueue() {
-    // std::random_device rd;
-    // std::mt19937 gen(rd());
-    // std::uniform_real_distribution<> dist(0, 10);
-    // srand(time(NULL));
     while (is_run_) {
-      if (update_) {
+      if (has_command_for_execute_) {
         ExecuteFirstCommandFromQueue();
         {
           std::lock_guard lock(mtx_);
-          if (commands_.empty()) update_ = false;
+          if (commands_.empty()) has_command_for_execute_ = false;
         }
         SleepForPeriod();
-      } else {
-      //         std::random_device rd;
-      // std::mt19937 gen(rd());
-        // std::uniform_real_distribution<> dist(-0.01, 0.01);
-        velocity_of_pump_ = pump_.GetVelocity();
-        // pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
-        pressure_of_sensor2_ = sensor2_.GetPressure();  //@note if null plus noise
-        // SetVeluesWhenQueueIsEmpty();
-      }
+      } 
+      // else {
+      //   SetVeluesWhenQueueIsEmpty();
+      // }
     }
   } 
   
   void ExecuteFirstCommandFromQueue() {
-    std::pair<PartType, double> command;
+    command_t command;
     command = GetElementFromQueue();
     PartType part_of_device = command.first;
     double value = command.second;
@@ -94,11 +85,11 @@ class QueueOfCommands {
     }
   }
 
-  std::pair<PartType, double> GetElementFromQueue() {
+  command_t GetElementFromQueue() {
     std::lock_guard lock(mtx_);
-    std::pair<PartType, double>  result = commands_.front();
+    command_t result = commands_.front();
     commands_.pop();
-    if (commands_.empty()) update_ = false;
+    if (commands_.empty()) has_command_for_execute_ = false;
     return result;
   }
   
@@ -110,27 +101,29 @@ class QueueOfCommands {
     }
   }
 
-  void SetVeluesWhenQueueIsEmpty() {
-    std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<> dist(-0.01, 0.01);
-    velocity_of_pump_ = (dist(gen) + 1) * pump_.GetVelocity();
-    pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
-    pressure_of_sensor2_ = (dist(gen) + 1) * sensor2_.GetPressure();  //@note if null plus noise
-  }
+  // void SetVeluesWhenQueueIsEmpty() {
+  //   std::random_device rd;
+  //   std::mt19937 gen(rd());
+  //   std::uniform_real_distribution<> dist(-0.01, 0.01);
+  //   std::lock_guard lock(mtx_);
+  //   velocity_of_pump_ = (dist(gen) + 1) * pump_.GetVelocity();
+  //   pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
+  //   pressure_of_sensor2_ = (dist(gen) + 1) * sensor2_.GetPressure();  //@note if null plus noise
+  // }
 
  private: 
-  std::queue<std::pair<PartType, double>> commands_;
+  std::queue<command_t> commands_;
   int period_ = 5;
-  mutable std::mutex mtx_;
-  bool update_ = false;
-  bool is_run_ = true;
   Pump pump_;
   Sensor sensor1_, sensor2_;
-  double velocity_of_pump_ = 0;   // @note move to Pump
-  double pressure_of_sensor1_ = 0;  // @note move to Sensor
-  double pressure_of_sensor2_ = 0;  // @note move to Sensor
+  const double kPercentOfNoise = 1;
+  mutable std::mutex mtx_;
+  bool has_command_for_execute_ = false;
+  bool is_run_ = true;
+  // double velocity_of_pump_ = 0;   // @note move to Pump
+  // double pressure_of_sensor1_ = 0;  // @note move to Sensor
+  // double pressure_of_sensor2_ = 0;  // @note move to Sensor
 };
 
 
-#endif  // SQUEUE_OF_COMMANDS_H_
+#endif  // COMMANDS_EXECUTION_

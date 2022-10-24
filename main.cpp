@@ -1,7 +1,7 @@
-#include "implementation.h"
+#include "read_from_consol.h"
 
 int main(void) {
-  Implementation implementation;
-  implementation.Start();
+  ReadFromConsol read_commands;
+  read_commands.StartReadFromConsol();
   return 0;
 }

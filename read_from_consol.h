@@ -1,22 +1,10 @@
-#ifndef IMPLEMENTATION_H_
-#define IMPLEMENTATION_H_
+#ifndef READ_FROM_CONSOL_H_
+#define READ_FROM_CONSOL__H_
 
 #include <string>
-// #include <queue>
-// #include <map>
-// #include <stdexcept>
-
-// #include "elements_of_device/pump.h"
-// #include "elements_of_device/sensor.h"
 #include "queue_of_commands.h"
 
-class Implementation {
-  // enum PartType {
-  //   kPump,
-  //   kSensor1,
-  //   kSensor2
-  // };
-
+class ReadFromConsol {
   enum Message {
     kWelcome,
     kShowHelp,
@@ -35,26 +23,25 @@ class Implementation {
   };
 
  public:
-  Implementation() = default;
-  ~Implementation() = default;
-  void Start();
+  ReadFromConsol() = default;
+  ~ReadFromConsol() = default;
+
+  void StartReadFromConsol();
   void ReadCommandFromConsole(const std::string& command);
+  std::vector<std::string> ParserOfCommand(const std::string& command);
   void CommandForDevice(const std::string& command);
+
   void Print(const Message &message);
   void PrintInfo();
-  std::string RemoveSpaces(const std::string& command);
-  std::vector<std::string> ParserOfCommand(const std::string& command);
+
   void AddVelocityOfPamp(const std::string& command);
   void AddPressureOfSensor1(const std::string& command);
   void AddPressureOfSensor2(const std::string& command);
   void ChagePeriodOfDevice(const std::string& command);
-  
 
  private:
   QueueOfCommands queueOfCommands_;
-  // Pump pump_;
-  // Sensor sensor1_, sensor2_;
-  // double period_ = 5;
+  
   const std::vector<std::string> messages_ {
     "\n(EXIT)            enter for exit the program\n"\
      "(HELP)            get help\n",
@@ -75,11 +62,10 @@ class Implementation {
   };
 
   const std::vector<std::string> regex_ {
-    "^(P|p)[ ]{1,}+\\d*\\.?\\d+",
-    "^(S1|s1)[ ]{1,}+\\d*\\.?\\d+",
-    "^(S2|s2)[ ]{1,}+\\d*\\.?\\d+",
-    "^(T|t)[ ]{1,}+\\d*\\.?\\d+"
+    "^(P|p)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
+    "^(S1|s1)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
+    "^(S2|s2)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
+    "^(T|t)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$"
   };
-  const std::vector<std::string> parts_ = {"Pump", "Sensor1", "Sensor2"};
 };
-#endif  // IMPLEMENTATION__H_
+#endif  // READ_FROM_CONSOL_H_

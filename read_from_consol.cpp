@@ -1,10 +1,10 @@
-#include "implementation.h"
+#include "read_from_consol.h"
 
 #include <iostream>
 #include <iomanip>
 #include <regex>
 
-void Implementation::Start() {
+void ReadFromConsol::StartReadFromConsol() {
   std::string line;
   Print(kWelcome);
   while (line != "EXIT" && line != "exit" && !std::cin.eof()) {
@@ -17,7 +17,7 @@ void Implementation::Start() {
   }
 }
 
-void Implementation::ReadCommandFromConsole(const std::string& command) {
+void ReadFromConsol::ReadCommandFromConsole(const std::string& command) {
   if ((command == "HELP") || (command == "help")) {
     Print(kShowHelp);
     Print(kWelcome);
@@ -31,12 +31,13 @@ void Implementation::ReadCommandFromConsole(const std::string& command) {
   }
 }
 
-void Implementation::Print(const Message &message) {
+void ReadFromConsol::Print(const Message &message) {
   std::cout << messages_[message];
   std::cout << std::endl;
 }
 
-void Implementation::PrintInfo() {
+void ReadFromConsol::PrintInfo() {
+  std::vector<std::string> parts_ = {"Pump", "Sensor1", "Sensor2"};
   std::cout << "Velocity of pump: " <<  queueOfCommands_.GetVelocityOfPump() << std::endl;
   std::cout << "Pressure of sensor 1: " <<  queueOfCommands_.GetPressureOfSensor1() << std::endl;
   std::cout << "Pressure of sensor 2: " <<  queueOfCommands_.GetPressureOfSensor2() << std::endl;
@@ -61,7 +62,7 @@ void Implementation::PrintInfo() {
   }
 }
 
-void Implementation::CommandForDevice(const std::string& command) {
+void ReadFromConsol::CommandForDevice(const std::string& command) {
   if (std::regex_search(command, std::regex(regex_[kSetVelocityOfPamp]))) {
     AddVelocityOfPamp(command);
   } else if (std::regex_search(command, std::regex(regex_[kSetPressureOfSensor1]))) {
@@ -75,49 +76,40 @@ void Implementation::CommandForDevice(const std::string& command) {
   }
 }
 
-void Implementation::AddVelocityOfPamp(const std::string& command) {
+void ReadFromConsol::AddVelocityOfPamp(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double velocity = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kPump, velocity);
-  // Print(kSuccessOfAddVelocityOfPamp);
+  Print(kSuccessOfAddVelocityOfPamp);
 }
 
-void Implementation::AddPressureOfSensor1(const std::string& command) {
+void ReadFromConsol::AddPressureOfSensor1(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kSensor1, pressure);
-  // Print(kSuccessOfAddPressureOfSensor1);
+  Print(kSuccessOfAddPressureOfSensor1);
 }
 
-void Implementation::AddPressureOfSensor2(const std::string& command) {
+void ReadFromConsol::AddPressureOfSensor2(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
   queueOfCommands_.Push(QueueOfCommands::kSensor2, pressure);
-  // Print(kSuccessOfAddPressureOfSensor2);
+  Print(kSuccessOfAddPressureOfSensor2);
 }
 
-void Implementation::ChagePeriodOfDevice(const std::string& command) {
+void ReadFromConsol::ChagePeriodOfDevice(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double period = std::stod(tokens[1]);
   queueOfCommands_.SetPeriod(period);
-  // Print(kSuccessOfSetPeriod);
+  Print(kSuccessOfSetPeriod);
 }
 
-std::vector<std::string> Implementation::ParserOfCommand(const std::string& command) {
+std::vector<std::string> ReadFromConsol::ParserOfCommand(const std::string& command) {
   std::vector<std::string> result;
-  // std::istringstream string_stream(RemoveSpaces(command));
   std::istringstream string_stream(command);
   std::string token;
-  while (std::getline(string_stream, token, ' ') && result.size() < 2) {
+  while (std::getline(string_stream, token, ' ') ) {
     result.push_back(token);
   }
   return result;
 }
-
-// std::string Implementation::RemoveSpaces(const std::string& command) {
-//   std::regex sample("[ ]{1,}");
-//   std::string result;
-//   std::regex_replace(std::back_inserter(result),
-//                     command.begin(), command.end(), sample, " ");
-//   return result;
-// }

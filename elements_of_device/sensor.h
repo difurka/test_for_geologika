@@ -11,6 +11,13 @@ class Sensor {
     return pressure_;
   }
 
+  double GetPressureWithNoise(double percent) {
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::uniform_real_distribution<> dist(-0.01, 0.01);
+    return (dist(gen) * percent + 1) * pressure_;
+  }
+
  private:
   double pressure_ = 0;
 };

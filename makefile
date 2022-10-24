@@ -10,12 +10,12 @@ WCHECK=#-Wall -Wextra -Werror
 # 	CPPFLAGS+= -pthread
 # endif
 
-HEADERS=implementation.h \
+HEADERS=read_from_consol.h \
 		./elements_of_device/pump.h \
 		./elements_of_device/sensor.h \
 		queue_of_commands.h
 
-SOURCE=implementation.cpp \
+SOURCE=read_from_consol.cpp \
 		# ./elements_of_device/pump.cpp \
 		# elements_of_device/sensor.cpp 
 	   
