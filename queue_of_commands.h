@@ -48,6 +48,10 @@ class QueueOfCommands {
   }
 
   void InspectionOfQueue() {
+    // std::random_device rd;
+    // std::mt19937 gen(rd());
+    // std::uniform_real_distribution<> dist(0, 10);
+    // srand(time(NULL));
     while (is_run_) {
       if (update_) {
         ExecuteFirstCommandFromQueue();
@@ -57,7 +61,13 @@ class QueueOfCommands {
         }
         SleepForPeriod();
       } else {
-        SetVeluesWhenQueueIsEmpty();
+      //         std::random_device rd;
+      // std::mt19937 gen(rd());
+        // std::uniform_real_distribution<> dist(-0.01, 0.01);
+        velocity_of_pump_ = pump_.GetVelocity();
+        // pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
+        pressure_of_sensor2_ = sensor2_.GetPressure();  //@note if null plus noise
+        // SetVeluesWhenQueueIsEmpty();
       }
     }
   } 
@@ -104,9 +114,9 @@ class QueueOfCommands {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dist(-0.01, 0.01);
-    // velocity_of_pump_ = (dist(gen) + 1) * pump_.GetVelocity();
-    // pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
-    // pressure_of_sensor2_ = (dist(gen) + 1) * sensor2_.GetPressure();  //@note if null plus noise
+    velocity_of_pump_ = (dist(gen) + 1) * pump_.GetVelocity();
+    pressure_of_sensor1_ = (dist(gen)+ 1) * sensor1_.GetPressure();  //@note if null plus noise
+    pressure_of_sensor2_ = (dist(gen) + 1) * sensor2_.GetPressure();  //@note if null plus noise
   }
 
  private: 
