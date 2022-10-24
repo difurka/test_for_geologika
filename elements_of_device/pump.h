@@ -13,5 +13,6 @@ class Pump {
 
  private:
   double velocity_ = 0;
+  // double velocity_without_command_ = 0;
 };
 #endif  // EELEMENT_OF_DEVICE_PUMP_H_

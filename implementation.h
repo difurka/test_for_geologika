@@ -32,7 +32,8 @@ class Implementation {
     kSetPressureOfSensor2,
     kSetPeriod, 
     kGetInfo
-  };   
+  };
+
  public:
   Implementation() = default;
   ~Implementation() = default;
@@ -62,7 +63,7 @@ class Implementation {
       "(S1 P)            add pressure P for sensor 1 in the queue,\n"\
       "(S2 P)            set pressure P for sensor 2 in the queue,\n"\
       "(T S)             set period S of operation for the device in sec, the queue will set empty.\n"\
-      "(INFO)            get info about current settings of the device, content of queue of commands.",
+      "(INFO)            get info about current settings of the device, content of queue of commands.\n",
 
     "Velocity of the pump has added to queue.\n",
 

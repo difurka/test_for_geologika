@@ -1,6 +1,7 @@
 #include "implementation.h"
 
 #include <iostream>
+#include <iomanip>
 #include <regex>
 
 void Implementation::Start() {
@@ -43,9 +44,13 @@ void Implementation::PrintInfo() {
 
   std::queue<std::pair<QueueOfCommands::PartType, double>> tempQueue = queueOfCommands_.GetCommands();
   std::cout << "The queue of commands: ";
-  if (tempQueue.empty())
+  if (tempQueue.empty()) {
     std::cout << "empty." << std::endl;
-  else {
+    std::cout << std::fixed << std::setprecision(3)
+              << "Pressure difference between sensor 1 and sensor 2: " 
+              << queueOfCommands_.GetPressureOfSensor1() - queueOfCommands_.GetPressureOfSensor2()
+              << std::endl;
+  } else {
     int i = 1;
     while (!tempQueue.empty()) {
       std::cout << "\n" << i << ") " << parts_[tempQueue.front().first] << " " << tempQueue.front().second;
@@ -66,7 +71,7 @@ void Implementation::CommandForDevice(const std::string& command) {
   } else if (std::regex_search(command, std::regex(regex_[kSetPeriod]))) {
     ChagePeriodOfDevice(command);
   } else {
-    std::cout << "ERROR: invalid command " << command << std::endl;  // @note del command
+    std::cout << "ERROR: invalid command " << command << std::endl;
   }
 }
 
@@ -95,7 +100,7 @@ void Implementation::ChagePeriodOfDevice(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double period = std::stod(tokens[1]);
   queueOfCommands_.SetPeriod(period);
-  Print(kSuccessOfSetPeriod);
+  // Print(kSuccessOfSetPeriod);
 }
 
 std::vector<std::string> Implementation::ParserOfCommand(const std::string& command) {
@@ -103,7 +108,7 @@ std::vector<std::string> Implementation::ParserOfCommand(const std::string& comm
   // std::istringstream string_stream(RemoveSpaces(command));
   std::istringstream string_stream(command);
   std::string token;
-  while (std::getline(string_stream, token, ' ')) {
+  while (std::getline(string_stream, token, ' ') && result.size() < 2) {
     result.push_back(token);
   }
   return result;

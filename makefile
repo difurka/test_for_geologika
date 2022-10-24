@@ -1,6 +1,6 @@
 CXX=g++
 CPPFLAGS=-lstdc++ -std=c++17
-WCHECK=-Wall -Wextra -Werror
+WCHECK=#-Wall -Wextra -Werror
 # TESTFLAG=-lgtest --coverage -fprofile-arcs -ftest-coverage
 # DEBUGFLAG=-ggdb3
 
