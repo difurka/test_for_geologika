@@ -18,5 +18,5 @@
 
 Если в очереди нет команд, к текущему значению добавляется случайный шум, не превосходящий 1%.
 
-![preview](images\pic_1.PNG)
-![preview](images\pic_2.PNG)
+![preview](images/pic_1.PNG)
+![preview](images/pic_2.PNG)
