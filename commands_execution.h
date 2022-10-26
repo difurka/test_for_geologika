@@ -46,7 +46,7 @@ class CommandsExecution {
 
   mutable std::mutex mtx_;
   std::atomic<bool> end_of_cycle_in_thread_ = false;
-  std::condition_variable condVar_;
+  std::condition_variable ready_to_close_thread_;
   bool need_thread_for_run_ = true;
   bool has_command_for_execute_ = false;
 };

@@ -3,7 +3,6 @@
 #include <iostream>
 
 CommandsExecution::CommandsExecution() {
-  std::condition_variable condVar;
   std::thread inspector = std::thread(&CommandsExecution::InspectionOfQueue, this);
   inspector.detach();
 };
@@ -11,7 +10,7 @@ CommandsExecution::CommandsExecution() {
 CommandsExecution::~CommandsExecution() {
   need_thread_for_run_ = false;
   std::unique_lock<std::mutex> lck(mtx_);
-  condVar_.wait(lck,[&] {return end_of_cycle_in_thread_.load();});
+  ready_to_close_thread_.wait(lck,[&] {return end_of_cycle_in_thread_.load();});
 };
 
 void CommandsExecution::SetPeriod(double period) {
@@ -48,7 +47,7 @@ void CommandsExecution::InspectionOfQueue() {
     }
     end_of_cycle_in_thread_ = true;
   }
-  condVar_.notify_one();
+  ready_to_close_thread_.notify_one();
 } 
 
 void CommandsExecution::ExecuteFirstCommandFromQueue() {
