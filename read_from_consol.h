@@ -2,7 +2,7 @@
 #define READ_FROM_CONSOL__H_
 
 #include <string>
-#include "queue_of_commands.h"
+#include "commands_execution.h"
 
 class ReadFromConsol {
   enum Message {
@@ -40,8 +40,8 @@ class ReadFromConsol {
   void ChagePeriodOfDevice(const std::string& command);
 
  private:
-  QueueOfCommands queueOfCommands_;
-  
+  CommandsExecution commands_execution_;
+
   const std::vector<std::string> messages_ {
     "\n(EXIT)            enter for exit the program\n"\
      "(HELP)            get help\n",

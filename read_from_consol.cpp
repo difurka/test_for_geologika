@@ -38,23 +38,27 @@ void ReadFromConsol::Print(const Message &message) {
 
 void ReadFromConsol::PrintInfo() {
   std::vector<std::string> parts_ = {"Pump", "Sensor1", "Sensor2"};
-  std::cout << "Velocity of pump: " <<  queueOfCommands_.GetVelocityOfPump() << std::endl;
-  std::cout << "Pressure of sensor 1: " <<  queueOfCommands_.GetPressureOfSensor1() << std::endl;
-  std::cout << "Pressure of sensor 2: " <<  queueOfCommands_.GetPressureOfSensor2() << std::endl;
-  std::cout << "Period: " <<  queueOfCommands_.GetPeriod() << std::endl;
+  std::cout << std::fixed << std::setprecision(3) 
+            << "Velocity of pump: " <<  commands_execution_.GetVelocityOfPump() << std::endl;
+  std::cout << std::fixed << std::setprecision(3)
+            << "Pressure of sensor 1: " <<  commands_execution_.GetPressureOfSensor1() << std::endl;
+  std::cout << std::fixed << std::setprecision(3)
+            << "Pressure of sensor 2: " <<  commands_execution_.GetPressureOfSensor2() << std::endl;
+  std::cout << "Period: " <<  commands_execution_.GetPeriod() << std::endl;
 
-  std::queue<std::pair<QueueOfCommands::PartType, double>> tempQueue = queueOfCommands_.GetCommands();
+  std::queue<CommandsExecution::command_t> tempQueue = commands_execution_.GetCommands();
   std::cout << "The queue of commands: ";
   if (tempQueue.empty()) {
     std::cout << "empty." << std::endl;
     std::cout << std::fixed << std::setprecision(3)
               << "Pressure difference between sensor 1 and sensor 2: " 
-              << queueOfCommands_.GetPressureOfSensor1() - queueOfCommands_.GetPressureOfSensor2()
+              << commands_execution_.GetPressureOfSensor1() - commands_execution_.GetPressureOfSensor2()
               << std::endl;
   } else {
     int i = 1;
     while (!tempQueue.empty()) {
-      std::cout << "\n" << i << ") " << parts_[tempQueue.front().first] << " " << tempQueue.front().second;
+      std::cout << "\n" << i << ") " << parts_[tempQueue.front().first] 
+      << " " << tempQueue.front().second;
       tempQueue.pop();
       i++;
     }
@@ -79,28 +83,28 @@ void ReadFromConsol::CommandForDevice(const std::string& command) {
 void ReadFromConsol::AddVelocityOfPamp(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double velocity = std::stod(tokens[1]);
-  queueOfCommands_.Push(QueueOfCommands::kPump, velocity);
+  commands_execution_.PushInQueue(CommandsExecution::kPump, velocity);
   Print(kSuccessOfAddVelocityOfPamp);
 }
 
 void ReadFromConsol::AddPressureOfSensor1(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
-  queueOfCommands_.Push(QueueOfCommands::kSensor1, pressure);
+  commands_execution_.PushInQueue(CommandsExecution::kSensor1, pressure);
   Print(kSuccessOfAddPressureOfSensor1);
 }
 
 void ReadFromConsol::AddPressureOfSensor2(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double pressure = std::stod(tokens[1]);
-  queueOfCommands_.Push(QueueOfCommands::kSensor2, pressure);
+  commands_execution_.PushInQueue(CommandsExecution::kSensor2, pressure);
   Print(kSuccessOfAddPressureOfSensor2);
 }
 
 void ReadFromConsol::ChagePeriodOfDevice(const std::string& command) {
   auto tokens = ParserOfCommand(command);
   double period = std::stod(tokens[1]);
-  queueOfCommands_.SetPeriod(period);
+  commands_execution_.SetPeriod(period);
   Print(kSuccessOfSetPeriod);
 }
 
