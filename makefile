@@ -13,7 +13,6 @@ HEADERS=read_from_consol.h \
 		./elements_of_device/pump.h \
 		./elements_of_device/sensor.h
 		
-
 SOURCE=read_from_consol.cpp \
 	   commands_execution.cpp
 
