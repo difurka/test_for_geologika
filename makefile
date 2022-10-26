@@ -30,7 +30,3 @@ implement:
 
 clean:
 	@rm -rf device.out
-
-linter:
-	@clang-format -n $(MAIN) $(SOURCE) $(HEADERS)
-

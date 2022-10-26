@@ -1,16 +1,19 @@
 #include "commands_execution.h"
+
 #include <chrono>
 #include <iostream>
 
 CommandsExecution::CommandsExecution() {
-  std::thread inspector = std::thread(&CommandsExecution::InspectionOfQueue, this);
+  std::thread inspector =
+      std::thread(&CommandsExecution::InspectionOfQueue, this);
   inspector.detach();
 };
 
 CommandsExecution::~CommandsExecution() {
   need_thread_for_run_ = false;
   std::unique_lock<std::mutex> lck(mtx_);
-  ready_to_close_thread_.wait(lck,[&] {return end_of_cycle_in_thread_.load();});
+  ready_to_close_thread_.wait(lck,
+                              [&] { return end_of_cycle_in_thread_.load(); });
 };
 
 void CommandsExecution::SetPeriod(double period) {
@@ -18,14 +21,20 @@ void CommandsExecution::SetPeriod(double period) {
   period_ = period;
   need_thread_for_run_ = true;
 }
-  
-double CommandsExecution::GetPeriod() {return period_;};
-std::queue<CommandsExecution::command_t> CommandsExecution::GetCommands() {return commands_;}
-double CommandsExecution::GetVelocityOfPump() {return pump_.GetVelocity();}
-double CommandsExecution::GetPressureOfSensor1() {return sensor1_.GetPressure();}
-double CommandsExecution::GetPressureOfSensor2() {return sensor2_.GetPressure();}
 
-void CommandsExecution::PushInQueue(PartType element, double value){
+double CommandsExecution::GetPeriod() { return period_; };
+std::queue<CommandsExecution::command_t> CommandsExecution::GetCommands() {
+  return commands_;
+}
+double CommandsExecution::GetVelocityOfPump() { return pump_.GetVelocity(); }
+double CommandsExecution::GetPressureOfSensor1() {
+  return sensor1_.GetPressure();
+}
+double CommandsExecution::GetPressureOfSensor2() {
+  return sensor2_.GetPressure();
+}
+
+void CommandsExecution::PushInQueue(PartType element, double value) {
   std::lock_guard lock(mtx_);
   commands_.push(std::make_pair(element, value));
   has_command_for_execute_ = true;
@@ -41,14 +50,13 @@ void CommandsExecution::InspectionOfQueue() {
         if (commands_.empty()) has_command_for_execute_ = false;
       }
       SleepForPeriod();
-    } 
-    else {
+    } else {
       SetVeluesWhenQueueIsEmpty();
     }
     end_of_cycle_in_thread_ = true;
   }
   ready_to_close_thread_.notify_one();
-} 
+}
 
 void CommandsExecution::ExecuteFirstCommandFromQueue() {
   command_t command;

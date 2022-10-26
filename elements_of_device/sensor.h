@@ -10,9 +10,7 @@ class Sensor {
     pressure_with_noise_ = pressure;
   }
 
-  double GetPressure() {
-    return pressure_with_noise_;
-  }
+  double GetPressure() { return pressure_with_noise_; }
 
   void AddNoiseToPressure(double percent) {
     std::random_device rd;

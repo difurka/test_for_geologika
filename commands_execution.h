@@ -1,29 +1,25 @@
 #ifndef COMMANDS_EXECUTION_H_
 #define COMMANDS_EXECUTION_H_
 
-#include <mutex>
-#include <thread>
 #include <atomic>
 #include <condition_variable>
+#include <mutex>
 #include <queue>
+#include <thread>
 
 #include "elements_of_device/pump.h"
 #include "elements_of_device/sensor.h"
 
-class CommandsExecution {  
+class CommandsExecution {
  public:
-  enum PartType {
-    kPump,
-    kSensor1,
-    kSensor2
-  };
-  using command_t = std::pair<PartType, double>; 
+  enum PartType { kPump, kSensor1, kSensor2 };
+  using command_t = std::pair<PartType, double>;
 
   CommandsExecution();
   ~CommandsExecution();
-  
+
   void SetPeriod(double period);
-   
+
   double GetPeriod();
   std::queue<command_t> GetCommands();
   double GetVelocityOfPump();
@@ -37,7 +33,7 @@ class CommandsExecution {
   void SleepForPeriod();
   void SetVeluesWhenQueueIsEmpty();
 
- private: 
+ private:
   std::queue<command_t> commands_;
   int period_ = 5;
   Pump pump_;
@@ -50,6 +46,5 @@ class CommandsExecution {
   bool need_thread_for_run_ = true;
   bool has_command_for_execute_ = false;
 };
-
 
 #endif  // COMMANDS_EXECUTION_
