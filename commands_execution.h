@@ -20,12 +20,12 @@ class CommandsExecution {
 
   void SetPeriod(double period);
 
-  double GetPeriod();
-  std::queue<command_t> GetCommands();
-  double GetVelocityOfPump();
-  double GetPressureOfSensor1();
-  double GetPressureOfSensor2();
-  double GetDifferenceOfPressures();
+  // double GetPeriod();
+  // std::queue<command_t> GetCommands();
+  // double GetVelocityOfPump();
+  // double GetPressureOfSensor1();
+  // double GetPressureOfSensor2();
+  // double GetDifferenceOfPressures();
 
   void PushInQueue(PartType element, double value);
   void InspectionOfQueue();
@@ -33,6 +33,7 @@ class CommandsExecution {
   command_t GetElementFromQueue();
   void SleepForPeriod();
   void SetVeluesWhenQueueIsEmpty();
+  void GetInfo();
 
  private:
   std::queue<command_t> commands_;

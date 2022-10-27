@@ -1,6 +1,7 @@
 #include "commands_execution.h"
 
 #include <chrono>
+#include <iomanip>
 #include <iostream>
 
 CommandsExecution::CommandsExecution() {
@@ -20,22 +21,6 @@ void CommandsExecution::SetPeriod(double period) {
   need_thread_for_run_ = false;
   period_ = period;
   need_thread_for_run_ = true;
-}
-
-double CommandsExecution::GetPeriod() { return period_; };
-std::queue<CommandsExecution::command_t> CommandsExecution::GetCommands() {
-  return commands_;
-}
-double CommandsExecution::GetVelocityOfPump() { return pump_.GetVelocity(); }
-double CommandsExecution::GetPressureOfSensor1() {
-  return sensor1_.GetPressure();
-}
-double CommandsExecution::GetPressureOfSensor2() {
-  return sensor2_.GetPressure();
-}
-
-double CommandsExecution::GetDifferenceOfPressures() {
-  return difference_of_pressures_;
 }
 
 void CommandsExecution::PushInQueue(PartType element, double value) {
@@ -103,4 +88,37 @@ void CommandsExecution::SetVeluesWhenQueueIsEmpty() {
   pump_.AddNoiseToVelocity(kPercentOfNoise);
   sensor1_.AddNoiseToPressure(kPercentOfNoise);
   sensor2_.AddNoiseToPressure(kPercentOfNoise);
+}
+
+void CommandsExecution::GetInfo() {
+  std::vector<std::string> parts_ = {"Pump", "Sensor1", "Sensor2"};
+  std::lock_guard lock(mtx_);
+  std::cout << std::fixed << std::setprecision(3)
+            << "Velocity of pump: " << pump_.GetVelocity()
+            << std::endl;
+  std::cout << std::fixed << std::setprecision(4) << "Pressure of sensor 1: "
+            << sensor1_.GetPressure() << std::endl;
+  std::cout << std::fixed << std::setprecision(4) << "Pressure of sensor 2: "
+            << sensor2_.GetPressure() << std::endl;
+  std::cout << "Period: " << period_ << std::endl;
+
+  std::queue<CommandsExecution::command_t> tempQueue = commands_;
+  std::cout << "The queue of commands: ";
+  if (tempQueue.empty()) {
+    std::cout << "empty." << std::endl;
+    std::cout << std::fixed << std::setprecision(4)
+              << "Pressure difference between sensor 1 and sensor 2: "
+              << difference_of_pressures_
+              << std::endl;
+  } else {
+    int i = 1;
+    while (!tempQueue.empty()) {
+      std::cout << "\n"
+                << i << ") " << parts_[tempQueue.front().first] << " "
+                << tempQueue.front().second;
+      tempQueue.pop();
+      i++;
+    }
+    std::cout << "\nend of queue.\n" << std::endl;
+  }
 }

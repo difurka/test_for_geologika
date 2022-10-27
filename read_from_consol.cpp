@@ -1,6 +1,5 @@
 #include "read_from_consol.h"
 
-#include <iomanip>
 #include <iostream>
 #include <regex>
 
@@ -37,36 +36,7 @@ void ReadFromConsol::Print(const Message& message) {
 }
 
 void ReadFromConsol::PrintInfo() {
-  std::vector<std::string> parts_ = {"Pump", "Sensor1", "Sensor2"};
-  std::cout << std::fixed << std::setprecision(3)
-            << "Velocity of pump: " << commands_execution_.GetVelocityOfPump()
-            << std::endl;
-  std::cout << std::fixed << std::setprecision(4) << "Pressure of sensor 1: "
-            << commands_execution_.GetPressureOfSensor1() << std::endl;
-  std::cout << std::fixed << std::setprecision(4) << "Pressure of sensor 2: "
-            << commands_execution_.GetPressureOfSensor2() << std::endl;
-  std::cout << "Period: " << commands_execution_.GetPeriod() << std::endl;
-
-  std::queue<CommandsExecution::command_t> tempQueue =
-      commands_execution_.GetCommands();
-  std::cout << "The queue of commands: ";
-  if (tempQueue.empty()) {
-    std::cout << "empty." << std::endl;
-    std::cout << std::fixed << std::setprecision(4)
-              << "Pressure difference between sensor 1 and sensor 2: "
-              << commands_execution_.GetDifferenceOfPressures()
-              << std::endl;
-  } else {
-    int i = 1;
-    while (!tempQueue.empty()) {
-      std::cout << "\n"
-                << i << ") " << parts_[tempQueue.front().first] << " "
-                << tempQueue.front().second;
-      tempQueue.pop();
-      i++;
-    }
-    std::cout << "\nend of queue.\n" << std::endl;
-  }
+  commands_execution_.GetInfo();
 }
 
 void ReadFromConsol::CommandForDevice(const std::string& command) {
