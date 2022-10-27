@@ -33,7 +33,7 @@ class ReadFromConsol {
   void CommandForDevice(const std::string& command);
 
   void Print(const Message& message);
-  void PrintInfo();
+  // void PrintInfo();
 
   void AddVelocityOfPamp(const std::string& command);
   void AddPressureOfSensor1(const std::string& command);

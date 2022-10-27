@@ -21,7 +21,7 @@ void ReadFromConsol::ReadCommandFromConsole(const std::string& command) {
     Print(kShowHelp);
     Print(kWelcome);
   } else if ((command == "INFO") || (command == "info")) {
-    PrintInfo();
+    commands_execution_.GetInfo();
     Print(kWelcome);
   } else if (command == "EXIT" || command == "exit") {
     std::cout << "End of device operation" << std::endl;
@@ -35,9 +35,9 @@ void ReadFromConsol::Print(const Message& message) {
   std::cout << std::endl;
 }
 
-void ReadFromConsol::PrintInfo() {
-  commands_execution_.GetInfo();
-}
+// void ReadFromConsol::PrintInfo() {
+//   commands_execution_.GetInfo();
+// }
 
 void ReadFromConsol::CommandForDevice(const std::string& command) {
   if (std::regex_search(command, std::regex(regex_[kSetVelocityOfPamp]))) {
