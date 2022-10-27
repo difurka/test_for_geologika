@@ -34,6 +34,10 @@ double CommandsExecution::GetPressureOfSensor2() {
   return sensor2_.GetPressure();
 }
 
+double CommandsExecution::GetDifferenceOfPressures() {
+  return difference_of_pressures_;
+}
+
 void CommandsExecution::PushInQueue(PartType element, double value) {
   std::lock_guard lock(mtx_);
   commands_.push(std::make_pair(element, value));
@@ -49,11 +53,13 @@ void CommandsExecution::InspectionOfQueue() {
         std::lock_guard lock(mtx_);
         if (commands_.empty()) has_command_for_execute_ = false;
       }
-      SleepForPeriod();
     } else {
       SetVeluesWhenQueueIsEmpty();
     }
+    difference_of_pressures_ = sensor1_.GetPressure() - sensor2_.GetPressure();
+    SleepForPeriod();
     end_of_cycle_in_thread_ = true;
+    
   }
   ready_to_close_thread_.notify_one();
 }

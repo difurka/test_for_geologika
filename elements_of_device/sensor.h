@@ -16,7 +16,8 @@ class Sensor {
     std::random_device rd;
     std::mt19937 gen(rd());
     std::uniform_real_distribution<> dist(-0.01, 0.01);
-    pressure_with_noise_ = (dist(gen) * percent + 1) * pressure_;
+    double pressure = (pressure_ == 0) ? 0.1 : pressure_;
+    pressure_with_noise_ = (dist(gen) * percent + 1) * pressure;
   }
 
  private:

@@ -25,6 +25,7 @@ class CommandsExecution {
   double GetVelocityOfPump();
   double GetPressureOfSensor1();
   double GetPressureOfSensor2();
+  double GetDifferenceOfPressures();
 
   void PushInQueue(PartType element, double value);
   void InspectionOfQueue();
@@ -45,6 +46,7 @@ class CommandsExecution {
   std::condition_variable ready_to_close_thread_;
   bool need_thread_for_run_ = true;
   bool has_command_for_execute_ = false;
+  double difference_of_pressures_ = 0;
 };
 
 #endif  // COMMANDS_EXECUTION_
