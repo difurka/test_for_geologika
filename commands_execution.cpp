@@ -102,7 +102,7 @@ void CommandsExecution::GetInfo() {
             << sensor2_.GetPressure() << std::endl;
   std::cout << "Period: " << period_ << std::endl;
 
-  std::queue<CommandsExecution::command_t> tempQueue = commands_;
+  std::queue<command_t> tempQueue = commands_;
   std::cout << "The queue of commands: ";
   if (tempQueue.empty()) {
     std::cout << "empty." << std::endl;

@@ -20,13 +20,6 @@ class CommandsExecution {
 
   void SetPeriod(double period);
 
-  // double GetPeriod();
-  // std::queue<command_t> GetCommands();
-  // double GetVelocityOfPump();
-  // double GetPressureOfSensor1();
-  // double GetPressureOfSensor2();
-  // double GetDifferenceOfPressures();
-
   void PushInQueue(PartType element, double value);
   void InspectionOfQueue();
   void ExecuteFirstCommandFromQueue();

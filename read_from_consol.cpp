@@ -35,52 +35,34 @@ void ReadFromConsol::Print(const Message& message) {
   std::cout << std::endl;
 }
 
-// void ReadFromConsol::PrintInfo() {
-//   commands_execution_.GetInfo();
-// }
-
 void ReadFromConsol::CommandForDevice(const std::string& command) {
-  if (std::regex_search(command, std::regex(regex_[kSetVelocityOfPamp]))) {
-    AddVelocityOfPamp(command);
-  } else if (std::regex_search(command,
-                               std::regex(regex_[kSetPressureOfSensor1]))) {
-    AddPressureOfSensor1(command);
-  } else if (std::regex_search(command,
-                               std::regex(regex_[kSetPressureOfSensor2]))) {
-    AddPressureOfSensor2(command);
-  } else if (std::regex_search(command, std::regex(regex_[kSetPeriod]))) {
-    ChagePeriodOfDevice(command);
-  } else {
-    std::cout << "ERROR: invalid command " << command << std::endl;
+  auto tokens = ParserOfCommand(command);
+
+  if (tokens.size() != 2)
+    Print(kErrorInCommand);
+  else {
+    try {
+      std::string part_of_device = tokens[0];
+      double value = stod(tokens[1]);
+      if (part_of_device == "t" || part_of_device =="T") {
+        commands_execution_.SetPeriod(value);
+        Print(kSuccessOfSetPeriod);
+      } else if (part_of_device == "p" || part_of_device =="P") {
+        commands_execution_.PushInQueue(CommandsExecution::kPump, value);
+        Print(kSuccessOfAddVelocityOfPamp);
+      } else if (part_of_device == "s1" || part_of_device =="S1") {
+        commands_execution_.PushInQueue(CommandsExecution::kSensor1, value);
+        Print(kSuccessOfAddPressureOfSensor1);
+      } else if (part_of_device == "s2" || part_of_device =="S2") {
+        commands_execution_.PushInQueue(CommandsExecution::kSensor2, value);
+        Print(kSuccessOfAddPressureOfSensor2);
+      } else {
+        Print(kErrorInCommand);
+      }
+    } catch (std::exception& ex) {
+      Print(kErrorInCommand);
+    }
   }
-}
-
-void ReadFromConsol::AddVelocityOfPamp(const std::string& command) {
-  auto tokens = ParserOfCommand(command);
-  double velocity = std::stod(tokens[1]);
-  commands_execution_.PushInQueue(CommandsExecution::kPump, velocity);
-  Print(kSuccessOfAddVelocityOfPamp);
-}
-
-void ReadFromConsol::AddPressureOfSensor1(const std::string& command) {
-  auto tokens = ParserOfCommand(command);
-  double pressure = std::stod(tokens[1]);
-  commands_execution_.PushInQueue(CommandsExecution::kSensor1, pressure);
-  Print(kSuccessOfAddPressureOfSensor1);
-}
-
-void ReadFromConsol::AddPressureOfSensor2(const std::string& command) {
-  auto tokens = ParserOfCommand(command);
-  double pressure = std::stod(tokens[1]);
-  commands_execution_.PushInQueue(CommandsExecution::kSensor2, pressure);
-  Print(kSuccessOfAddPressureOfSensor2);
-}
-
-void ReadFromConsol::ChagePeriodOfDevice(const std::string& command) {
-  auto tokens = ParserOfCommand(command);
-  double period = std::stod(tokens[1]);
-  commands_execution_.SetPeriod(period);
-  Print(kSuccessOfSetPeriod);
 }
 
 std::vector<std::string> ReadFromConsol::ParserOfCommand(

@@ -12,7 +12,8 @@ class ReadFromConsol {
     kSuccessOfAddVelocityOfPamp,
     kSuccessOfAddPressureOfSensor1,
     kSuccessOfAddPressureOfSensor2,
-    kSuccessOfSetPeriod
+    kSuccessOfSetPeriod,
+    kErrorInCommand
   };
 
   enum Command {
@@ -33,12 +34,6 @@ class ReadFromConsol {
   void CommandForDevice(const std::string& command);
 
   void Print(const Message& message);
-  // void PrintInfo();
-
-  void AddVelocityOfPamp(const std::string& command);
-  void AddPressureOfSensor1(const std::string& command);
-  void AddPressureOfSensor2(const std::string& command);
-  void ChagePeriodOfDevice(const std::string& command);
 
  private:
   CommandsExecution commands_execution_;
@@ -61,12 +56,8 @@ class ReadFromConsol {
 
       "Pressure of the sensor 2 has added to queue.\n",
 
-      "Period has chanded.\n"};
-
-  const std::vector<std::string> regex_{
-      "^(P|p)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
-      "^(S1|s1)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
-      "^(S2|s2)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$",
-      "^(T|t)[ ]{1,}+(0|([1-9][0-9]*))(\\.[0-9]+)?$"};
+      "Period has chanded.\n",
+      
+      "ERROR: invalid command \n"};
 };
 #endif  // READ_FROM_CONSOL_H_
