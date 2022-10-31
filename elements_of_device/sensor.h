@@ -4,7 +4,7 @@
 #include <random>
 
 class Sensor {
- public:
+public:
   void SetPressure(double pressure) {
     pressure_ = pressure;
     pressure_with_noise_ = pressure;
@@ -20,8 +20,8 @@ class Sensor {
     pressure_with_noise_ = (dist(gen) * percent + 1) * pressure;
   }
 
- private:
+private:
   double pressure_ = 0;
   double pressure_with_noise_ = 0;
 };
-#endif  // EELEMENT_OF_DEVICE_SENSORH_
+#endif // EELEMENT_OF_DEVICE_SENSORH_

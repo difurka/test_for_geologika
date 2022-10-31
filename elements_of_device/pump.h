@@ -4,7 +4,7 @@
 #include <random>
 
 class Pump {
- public:
+public:
   void SetVelocity(double velocity) {
     velocity_ = velocity;
     velocity_with_noise_ = velocity;
@@ -19,8 +19,8 @@ class Pump {
     velocity_with_noise_ = (dist(gen) * percent + 1) * velocity_;
   }
 
- private:
+private:
   double velocity_ = 0;
   double velocity_with_noise_ = 0;
 };
-#endif  // EELEMENT_OF_DEVICE_PUMP_H_
+#endif // EELEMENT_OF_DEVICE_PUMP_H_

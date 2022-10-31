@@ -1,5 +1,6 @@
 #include "read_from_consol.h"
 
+#include <boost/lexical_cast.hpp>
 #include <iostream>
 #include <regex>
 
@@ -37,13 +38,12 @@ void ReadFromConsol::Print(const Message& message) {
 
 void ReadFromConsol::CommandForDevice(const std::string& command) {
   auto tokens = ParserOfCommand(command);
-
   if (tokens.size() != 2)
     Print(kErrorInCommand);
   else {
     try {
       std::string part_of_device = tokens[0];
-      double value = stod(tokens[1]);
+      double value = boost::lexical_cast<double>(tokens[1]);
       if (part_of_device == "t" || part_of_device =="T") {
         commands_execution_.SetPeriod(value);
         Print(kSuccessOfSetPeriod);

@@ -24,18 +24,18 @@ class ReadFromConsol {
     kGetInfo
   };
 
- public:
+public:
   ReadFromConsol() = default;
   ~ReadFromConsol() = default;
 
   void StartReadFromConsol();
-  void ReadCommandFromConsole(const std::string& command);
-  std::vector<std::string> ParserOfCommand(const std::string& command);
-  void CommandForDevice(const std::string& command);
+  void ReadCommandFromConsole(const std::string &command);
+  std::vector<std::string> ParserOfCommand(const std::string &command);
+  void CommandForDevice(const std::string &command);
 
-  void Print(const Message& message);
+  void Print(const Message &message);
 
- private:
+private:
   CommandsExecution commands_execution_;
 
   const std::vector<std::string> messages_{
@@ -57,7 +57,7 @@ class ReadFromConsol {
       "Pressure of the sensor 2 has added to queue.\n",
 
       "Period has chanded.\n",
-      
+
       "ERROR: invalid command \n"};
 };
-#endif  // READ_FROM_CONSOL_H_
+#endif // READ_FROM_CONSOL_H_

@@ -11,7 +11,7 @@
 #include "elements_of_device/sensor.h"
 
 class CommandsExecution {
- public:
+public:
   enum PartType { kPump, kSensor1, kSensor2 };
   using command_t = std::pair<PartType, double>;
 
@@ -28,7 +28,7 @@ class CommandsExecution {
   void SetVeluesWhenQueueIsEmpty();
   void GetInfo();
 
- private:
+private:
   std::queue<command_t> commands_;
   int period_ = 5;
   Pump pump_;
@@ -43,4 +43,4 @@ class CommandsExecution {
   double difference_of_pressures_ = 0;
 };
 
-#endif  // COMMANDS_EXECUTION_
+#endif // COMMANDS_EXECUTION_
